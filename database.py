@@ -1,16 +1,6 @@
 import os
-import os.path
-from os.path import dirname, join
-import dotenv
 import sqlite3
 import MySQLdb
-
-dotenv.load_dotenv(join(dirname(__file__), '.env'))
-
-DB_CONNECTION = os.environ.get('DB_CONNECTION')
-DB_DATABASE = os.environ.get('DB_DATABASE')
-DB_USERNAME = os.environ.get('DB_USERNAME')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
 
 class Database():
 
@@ -18,6 +8,12 @@ class Database():
     cursor = None
 
     def __init__(self):
+
+        DB_CONNECTION = os.environ.get('DB_CONNECTION')
+        DB_DATABASE = os.environ.get('DB_DATABASE')
+        DB_USERNAME = os.environ.get('DB_USERNAME')
+        DB_PASSWORD = os.environ.get('DB_PASSWORD')
+
         if DB_CONNECTION == 'sqlite':
             if DB_DATABASE:
                 if not os.path.isfile(DB_DATABASE):
@@ -28,11 +24,18 @@ class Database():
                 raise Exception('No database specified')
         elif DB_CONNECTION == 'mysql':
             self.connection = MySQLdb.connect(user=DB_USERNAME, passwd=DB_PASSWORD, db=DB_DATABASE)
+            self.cursor = self.connection.cursor()
 
     def query(self, query, args=None):
-        cursor = self.connection.cursor()
         if args == None:
-            cursor.execute(query)
+            # print 'make simple query:'
+            # print query
+            self.cursor.execute(query)
         else:
-            cursor.execute(query, args)
+            # print 'make complex query:'
+            # print query
+            # print args
+            self.cursor.execute(query, args)
+        # print 'commit query'
         result = self.connection.commit()
+        # print result

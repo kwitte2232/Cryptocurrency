@@ -2,17 +2,29 @@ import time, sched
 import sys
 from pprint import pprint
 import requests
+import dotenv
+import os
+from os.path import dirname, join
+import sqlite3
+import MySQLdb
+import exchange_rate
 
+exchange_rates = exchange_rate.ExchangeRate()
+print exchange_rates.fetchAll()
 
-scheduler = sched.scheduler(time.time, time.sleep)
+sys.exit()
 
-def print_time():
-    print "From print_time", time.time()
+dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
-scheduler.enter(1, 1, print_time, ())
-scheduler.enter(2, 1, print_time, ())
-scheduler.enter(3, 1, print_time, ())
-scheduler.run()
+DB_CONNECTION = os.environ.get('DB_CONNECTION')
+DB_DATABASE = os.environ.get('DB_DATABASE')
+DB_USERNAME = os.environ.get('DB_USERNAME')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
+
+connection = MySQLdb.connect(user=DB_USERNAME, passwd=DB_PASSWORD, db=DB_DATABASE)
+cursor = connection.cursor()
+cursor.execute('SELECT * FROM exchange_rates')
+print cursor.fetchall()
 
 sys.exit()
 
