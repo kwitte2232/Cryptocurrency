@@ -11,6 +11,9 @@ DB_DATABASE = os.environ.get('DB_DATABASE')
 
 class Database():
 
+    connection = None
+    cursor = None
+
     def __init__(self):
         if DB_CONNECTION == 'sqlite':
             if DB_DATABASE:

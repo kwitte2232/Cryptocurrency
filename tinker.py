@@ -1,6 +1,20 @@
-import time
+import time, sched
+import sys
 from pprint import pprint
 import requests
+
+
+scheduler = sched.scheduler(time.time, time.sleep)
+
+def print_time():
+    print "From print_time", time.time()
+
+scheduler.enter(1, 1, print_time, ())
+scheduler.enter(2, 1, print_time, ())
+scheduler.enter(3, 1, print_time, ())
+scheduler.run()
+
+sys.exit()
 
 class Tinker():
 
