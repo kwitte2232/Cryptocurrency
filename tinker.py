@@ -1,15 +1,30 @@
-import os
-from os.path import dirname, join
+import time, sched
 import sys
-import time
 from pprint import pprint
 import requests
 import dotenv
+import os
+from os.path import dirname, join
+import sqlite3
+import MySQLdb
+import exchange_rate
+
+exchange_rates = exchange_rate.ExchangeRate()
+print exchange_rates.fetchAll()
+
+sys.exit()
 
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
+
 DB_CONNECTION = os.environ.get('DB_CONNECTION')
 DB_DATABASE = os.environ.get('DB_DATABASE')
-print(DB_CONNECTION)
+DB_USERNAME = os.environ.get('DB_USERNAME')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
+
+connection = MySQLdb.connect(user=DB_USERNAME, passwd=DB_PASSWORD, db=DB_DATABASE)
+cursor = connection.cursor()
+cursor.execute('SELECT * FROM exchange_rates')
+print cursor.fetchall()
 
 sys.exit()
 
