@@ -16,30 +16,36 @@ class GatherData():
 
     def initialize_database(self):
         self.db = database.Database()
-        self.db.query('''CREATE TABLE IF NOT EXISTS exchange_rates
-            (timestamp text, currency_from text, currency_to text, rate real)''')
+        self.db.query("CREATE TABLE IF NOT EXISTS exchange_rates (id INT AUTO_INCREMENT KEY, timestamp TEXT, currency_from TEXT, currency_to TEXT, rate FLOAT)")
 
-    def round_time(self, timestamp, interval):
-        return int(math.floor(timestamp / interval) * interval)
+    def set_interval(self, interval):
+        if interval != None:
+            self.interval = interval
 
-    def fetch_exchange_rates(self, iterations=1, interval=None):
-        if interval == None:
-            interval = self.interval
+    def round_time(self, timestamp):
+        return int(math.floor(timestamp / self.interval) * self.interval)
 
-        timestamp = self.round_time(int(time.time()), interval)
+    def schedule_rate_pulls(self, iterations=0, interval=None):
+        self.set_interval(interval)
 
-        for iteration in range(0, iterations):
-            offset = iteration * interval
-            self.scheduler.enter(offset, 1, self.fetch_and_presists_exchange_rate, [])
+        if iterations == 0:
+            self.scheduler.enter(0, 1, self.fetch_and_presists_exchange_rate, [])
+            self.scheduler.enter(self.interval, 1, self.schedule_rate_pulls, [0])
+        else:
+            for iteration in range(0, iterations):
+                offset = iteration * self.interval
+                self.scheduler.enter(offset, 1, self.fetch_and_presists_exchange_rate, [])
 
         self.scheduler.run()
 
     def fetch_and_presists_exchange_rate(self):
+        timestamp = self.round_time(int(time.time()))
+        print timestamp
         response = self.fetch_exchange_rate()
+        self.persists_exchange_rate(timestamp, response['ticker']['price'])
         print response['ticker']['price']
 
     def fetch_exchange_rate(self):
-        print int(time.time())
         url = 'https://api.cryptonator.com/api/ticker/' + self.currency_from + '-' + self.currency_to
         print url
         response = requests.get(url)
@@ -50,12 +56,17 @@ class GatherData():
         # currency_from = 'BTC'
         # currency_to = 'ETH'
         # rate = 0.000024214
-        result = self.db.cursor.execute("insert into exchange_rates values (?, ?, ?, ?)", (timestamp, self.currency_from, self.currency_to, rate))
+        self.db.query("INSERT INTO exchange_rates (`timestamp`, `currency_from`, `currency_to`, `rate`) VALUES (%s, %s, %s, %s)", (timestamp, self.currency_from, self.currency_to, rate))
+
+    def retrieve_exchange_rates(self):
+        self.db.query("SELECT * FROM exchange_rates")
 
 btceth = GatherData('BTC', 'ETH')
 
 # print(gather_data.pull_result(str(int(time.time())), 'BTC', 'ETH'))
-btceth.fetch_exchange_rates(5)
+btceth.schedule_rate_pulls(3, 3)
+
+print btceth.retrieve_exchange_rates()
 
 
 
