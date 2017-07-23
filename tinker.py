@@ -1,6 +1,17 @@
+import os
+from os.path import dirname, join
+import sys
 import time
 from pprint import pprint
 import requests
+import dotenv
+
+dotenv.load_dotenv(join(dirname(__file__), '.env'))
+DB_CONNECTION = os.environ.get('DB_CONNECTION')
+DB_DATABASE = os.environ.get('DB_DATABASE')
+print(DB_CONNECTION)
+
+sys.exit()
 
 class Tinker():
 
