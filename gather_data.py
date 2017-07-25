@@ -3,6 +3,7 @@ import sched
 import math
 import requests
 import exchange_rate
+import threading
 
 class GatherData():
 
@@ -13,6 +14,8 @@ class GatherData():
         self.currency_to = currency_to
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.exchange_rate = exchange_rate.ExchangeRate()
+        self.exchange_rate.currency_from = currency_from
+        self.exchange_rate.currency_to = currency_to
 
     def set_interval(self, interval):
         if interval != None:
@@ -25,8 +28,8 @@ class GatherData():
         self.set_interval(interval)
 
         if iterations == 0:
-            self.scheduler.enter(0, 1, self.fetch_and_presists_exchange_rate, [])
-            self.scheduler.enter(self.interval, 1, self.schedule_rate_pulls, [0])
+            self.fetch_and_presists_exchange_rate()
+            threading.Timer(self.interval, self.schedule_rate_pulls).start()
         else:
             for iteration in range(0, iterations):
                 offset = iteration * self.interval
@@ -36,20 +39,19 @@ class GatherData():
 
     def fetch_and_presists_exchange_rate(self):
         timestamp = self.round_time(int(time.time()))
-        # print timestamp
         rate = self.fetch_exchange_rate()
         self.persists_exchange_rate(timestamp, rate)
         print rate
 
     def fetch_exchange_rate(self):
         url = 'https://poloniex.com/public?command=returnTicker'
-        # print url
         response = requests.get(url)
         return response.json()[self.currency_from + '_' + self.currency_to]['last']
 
     def persists_exchange_rate(self, timestamp, rate):
-        attributes = (timestamp, self.currency_from, self.currency_to, rate)
-        self.exchange_rate.create(attributes)
+        self.exchange_rate.timestamp = timestamp
+        self.exchange_rate.rate = rate
+        self.exchange_rate.create()
 
     def retrieve_exchange_rates(self):
         self.exchange_rate.fetchAll()

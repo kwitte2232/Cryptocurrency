@@ -1,110 +1,24 @@
-import time, sched
-import sys
-from pprint import pprint
-import requests
 import dotenv
 import os
 from os.path import dirname, join
-import sqlite3
-import MySQLdb
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
 import exchange_rate
-
-exchange_rates = exchange_rate.ExchangeRate()
-print exchange_rates.fetchAll()
-
-sys.exit()
 
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
-DB_CONNECTION = os.environ.get('DB_CONNECTION')
-DB_DATABASE = os.environ.get('DB_DATABASE')
-DB_USERNAME = os.environ.get('DB_USERNAME')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
+DATA_RESOLUTION = os.environ.get('DATA_RESOLUTION')
 
-connection = MySQLdb.connect(user=DB_USERNAME, passwd=DB_PASSWORD, db=DB_DATABASE)
-cursor = connection.cursor()
-cursor.execute('SELECT * FROM exchange_rates')
-print cursor.fetchall()
+rates = exchange_rate.ExchangeRate().fetchAll()
 
-sys.exit()
+price_data = []
 
-class Tinker():
+for rate in rates:
+    price_data.append([int(rate[1]), float(rate[4])])
 
-    def __init__(self):
+plt.plot(price_data)
 
-        params = {
-            'context_id': 'asdf',
-            'user_id': 'asdfasdf',
-            'lis_person_contact_email_primary': 'davo@packback.co',
-            'lis_person_name_given': '',
-            'lis_person_name_family': '',
-            'roles': 'Instructor',
-
-            'oauth_nonce': oauth.generate_nonce(),
-            'oauth_timestamp': str(int(time.time())),
-            'oauth_version': '1.0',
-
-            'lti_message_type': 'basic-lti-launch-request',
-            'lti_version': 'LTI-1p0'
-        }
-
-        token = oauth.Token(key="lti1_3c183712f49bc6e9df6c4430085791abb85dd9f39bcf8ae04d32967f0182cf1a", secret="f2503f881e5d919710dd13be3ca054bdac3df43fac11936ad16928d8fd54deee")
-        consumer = oauth.Consumer(key="lti1_3c183712f49bc6e9df6c4430085791abb85dd9f39bcf8ae04d32967f0182cf1a", secret="f2503f881e5d919710dd13be3ca054bdac3df43fac11936ad16928d8fd54deee")
-
-        # Set our token/key parameters
-        # params['oauth_token'] = token.key
-        params['oauth_consumer_key'] = consumer.key
-
-        # Create our request. Change method, etc. accordingly.
-        req = oauth.Request(method="GET", url='http://pb-prdalt-lmsapi.azurewebsites.net/lti/launch', parameters=params)
-
-        # Sign the request.
-        signature_method = oauth.SignatureMethod_HMAC_SHA1()
-        req.sign_request(signature_method, consumer, token)
-
-        params['oauth_body_hash'] = req.get_parameter('oauth_body_hash')
-        params['oauth_signature'] = req.get_parameter('oauth_signature')
-        params['oauth_signature_method'] = req.get_parameter('oauth_signature_method')
-        params['oauth_token'] = req.get_parameter('oauth_token')
-
-        pprint(params)
-
-class MakeRequest():
-
-    def __init__(self):
-
-        url = 'https://dev-lms-api.packback.co/lti/launch'
-
-        params = {
-            'context_id': 'asdf',
-            'user_id': 'asdfasdf',
-            'lis_person_contact_email_primary': 'davo@packback.co',
-            'lis_person_name_given': '',
-            'lis_person_name_family': '',
-            'roles': 'Instructor',
-            'resource_link_id': '3asd',
-
-            'oauth_nonce': oauth.generate_nonce(),
-            'oauth_timestamp': str(int(time.time())),
-            'oauth_version': '1.0',
-            'oauth_callback': 'about:blank',
-
-            'lti_message_type': 'basic-lti-launch-request',
-            'lti_version': 'LTI-1p0'
-        }
-
-        consumer = oauth.Consumer(key="12345", secret="secret")
-
-        params['oauth_consumer_key'] = consumer.key
-
-        # Create our request. Change method, etc. accordingly.
-        req = oauth.Request(method="POST", url=url, parameters=params)
-
-        # Sign the request.
-        signature_method = oauth.SignatureMethod_HMAC_SHA1()
-
-        req.sign_request(signature_method, consumer, None)
-
-        response = requests.post(url, data=req)
-
-MakeRequest()
+# 0.0817
+# 0.08067064
