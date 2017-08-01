@@ -40,13 +40,18 @@ class GatherData():
     def fetch_and_presists_exchange_rate(self):
         timestamp = self.round_time(int(time.time()))
         rate = self.fetch_exchange_rate()
-        self.persists_exchange_rate(timestamp, rate)
-        print rate
+        if rate != False:
+            self.persists_exchange_rate(timestamp, rate)
+            print rate
 
     def fetch_exchange_rate(self):
-        url = 'https://poloniex.com/public?command=returnTicker'
+        url = 'https://shapeshift.io/rate/' + self.currency_from.lower() + '_' + self.currency_to.lower()
         response = requests.get(url)
-        return response.json()[self.currency_from + '_' + self.currency_to]['last']
+        if 'rate' in response.json():
+            return response.json()['rate']
+        else:
+            print 'Failed to fetch rate:'
+            print response.json()
 
     def persists_exchange_rate(self, timestamp, rate):
         self.exchange_rate.timestamp = timestamp
