@@ -29,24 +29,32 @@ data = btceth.retrieveExchangeRates();
 data1 = data[0:5350]
 data2 = data[5351:len(data)]
 
-spike = spike.Spike(data2)
-momentum = momentum.Momentum(data2)
-spike.setExchangeFee(.11)
-momentum.setExchangeFee(.11)
+results = []
 
-# # Strategies
+for i in data2:
+    results.append(i[4])
 
-spike.setTradeThreshold(2200)
-spike.setInitialInvestment(1000)
-spike.setResolution(50)
-spike.run()
-spike.report()
+plt.plot(results)
+plt.show()
 
-momentum.setTradeThreshold(3250)
-momentum.setInitialInvestment(1000)
-momentum.setResolution(225)
-momentum.run()
-momentum.report()
+# spike = spike.Spike(data2)
+# momentum = momentum.Momentum(data2)
+# spike.setExchangeFee(.11)
+# momentum.setExchangeFee(.11)
+
+# # # Strategies
+
+# spike.setTradeThreshold(2200)
+# spike.setInitialInvestment(1000)
+# spike.setResolution(50)
+# spike.run()
+# spike.report()
+
+# momentum.setTradeThreshold(3250)
+# momentum.setInitialInvestment(1000)
+# momentum.setResolution(225)
+# momentum.run()
+# momentum.report()
 
 # # Run tests
 
@@ -67,19 +75,3 @@ results = []
 if len(results):
     plt.plot(results)
     plt.show()
-
-# dotenv.load_dotenv(join(dirname(__file__), '.env'))
-
-# DATA_RESOLUTION = os.environ.get('DATA_RESOLUTION')
-
-# rates = exchange_rate.ExchangeRate().fetchAll()
-
-# price_data = []
-
-# for rate in rates:
-#     price_data.append([int(rate[1]), float(rate[4])])
-
-# plt.plot(price_data)
-
-# 0.0817
-# 0.08067064
