@@ -59,4 +59,4 @@ class GatherData():
         self.exchange_rate.create()
 
     def retrieve_exchange_rates(self):
-        self.exchange_rate.fetchAll()
+        return self.exchange_rate.fetchAll()
