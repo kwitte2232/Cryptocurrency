@@ -45,7 +45,7 @@ class Trade():
 
         timestamp -= self.TEST_RESOLUTION
 
-        data = self.btceth.retrieveExchangeRatesSince(timestamp);
+        data = self.btceth.retrieveExchangeRatesBetween(timestamp);
 
         spike = strategy.Spike(data)
         spike.setExchangeFee(.11)

@@ -42,11 +42,11 @@ spike.setResolution(50)
 spike.run()
 spike.report()
 
-# momentum.setTradeThreshold(3250)
-# momentum.setInitialInvestment(1000)
-# momentum.setResolution(225)
-# momentum.run()
-# momentum.report()
+momentum.setTradeThreshold(3250)
+momentum.setInitialInvestment(1000)
+momentum.setResolution(225)
+momentum.run()
+momentum.report()
 
 # # Run tests
 

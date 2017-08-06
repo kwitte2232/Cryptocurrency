@@ -19,7 +19,7 @@ class Momentum(strategy.Strategy):
         return self.testData(control_interval)
 
     def test(self):
-        return self.testDat(self.data)
+        return self.testData(self.data)
 
     def testData(self, test_data):
 
