@@ -9,6 +9,9 @@ class Spike(strategy.Strategy):
         self.setExchangeFee(0)
         self.reset()
 
+        self.good_trades = []
+        self.bad_trades = []
+
     def testPoint(self, point):
         if point < self.resolution:
             return False
@@ -16,17 +19,17 @@ class Spike(strategy.Strategy):
         test_point = point - self.resolution
         test_interval = self.data[test_point:point]
 
-        test_vals = list(map(self.extractRate, test_interval))
-        test_times = list(map(self.extractTime, test_interval))
+        return self.testData(test_interval)
 
-        slope, intercept, r_value, p_value, std_err = stats.linregress(test_vals, test_times)
+    def test(self):
+        return self.testData(self.data)
 
-        buy = slope > self.trade_threshold and std_err < slope
+    def testData(self, test_data):
+        self.getLine(test_data)
 
-        if buy and self.bought == False:
-            self.buy(self.data[point][1])
-        elif buy == False and self.bought:
-            self.sell(self.data[point][1])
+        buy = self.slope > self.trade_threshold
+
+        return buy
 
 
 

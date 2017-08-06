@@ -1,3 +1,5 @@
+from scipy import stats
+
 class Strategy():
 
     def reset(self):
@@ -34,25 +36,44 @@ class Strategy():
     def getNet(self):
         return self.invested_value
 
+    def getLine(self, test_data):
+        test_vals = list(map(self.extractRate, test_data))
+        test_times = list(map(self.extractTime, test_data))
+
+        self.slope, self.intercept, self.r_value, self.p_value, self.std_err = stats.linregress(test_vals, test_times)
+
+        return self.slope, self.intercept, self.r_value, self.p_value, self.std_err
+
     def run(self):
         while self.pointer < self.set_length:
-            self.testPoint(self.pointer)
+            buy = self.testPoint(self.pointer)
+
+            if buy and self.bought == False:
+                self.buy(self.data[self.pointer][1])
+            elif buy == False and self.bought:
+                self.sell(self.data[self.pointer][1])
+
             self.pointer += 1
 
     def report(self):
         print self.original_value, self.invested_value
+
+    def reportLine(self):
+        return self.slope, self.intercept, self.r_value, self.p_value, self.std_err
 
     def buy(self, value):
         self.traded_value = float(self.invested_value - self.exchange_fee) / float(value)
         self.bought = True
         self.trades += 1
         # print str(value) + " bought."
+        return self.traded_value
 
     def sell(self, value):
         self.invested_value = float(self.traded_value) * float(value) - self.exchange_fee
         self.bought = False
         self.trades += 1
-        # print str(value) + " sold. new invested value: " + str(self.invested_value)
+        # print str(value) + " sold. new invested value: " + str(self.invested_value))
+        return self.invested_value
 
 
 

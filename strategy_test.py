@@ -20,6 +20,9 @@ class StrategyTest():
     def setPoint(self, point):
         return int(round(point / self.interval))
 
+    def getResults(self):
+        return self.results
+
     def testResolution(self, threshold = 2000, investment = 1000):
         # Set our start and end points in the data
         start = self.setPoint(self.start)
@@ -53,7 +56,7 @@ class StrategyTest():
             print "Threshold: " + str(threshold)
             self.runTest(resolution, threshold, investment)
 
-    def runTest(resolution, threshold, investment):
+    def runTest(self, resolution, threshold, investment):
         self.strategy.reset()
         self.strategy.setTradeThreshold(threshold)
         self.strategy.setInitialInvestment(investment)

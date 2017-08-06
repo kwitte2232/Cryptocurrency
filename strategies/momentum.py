@@ -16,25 +16,27 @@ class Momentum(strategy.Strategy):
         control_point = point - self.resolution
         control_interval = self.data[control_point:point]
 
-        control_vals = list(map(self.extractRate, control_interval))
-        control_times = list(map(self.extractTime, control_interval))
-        control_slope = stats.linregress(control_vals, control_times)
+        return self.testData(control_interval)
 
-        test_point = point - self.resolution / 4
-        test_interval = self.data[test_point:point]
+    def test(self):
+        return self.testDat(self.data)
 
-        test_vals = list(map(self.extractRate, test_interval))
-        test_times = list(map(self.extractTime, test_interval))
-        test_slope, intercept, r_value, p_value, std_err = stats.linregress(test_vals, test_times)
+    def testData(self, test_data):
+
+        control_slope = self.getControlLine(test_data)
+
+        test_point = int(round(len(test_data) - self.resolution * 3 / 4))
+        test_interval = test_data[test_point:len(test_data)]
+
+        test_slope = self.getLine(test_interval)
 
         buy = control_slope > self.trade_threshold and test_slope > self.trade_threshold
 
-        if buy and self.bought == False:
-            self.buy(self.data[point][1])
-        elif buy == False and self.bought:
-            self.sell(self.data[point][1])
+        return buy
 
+    def getControlLine(self, data):
+        self.control_slope, self.control_intercept, self.control_r_value, self.control_p_value, self.control_std_err = self.getLine(data)
+        return self.control_slope, self.control_intercept, self.control_r_value, self.control_p_value, self.control_std_err
 
-
-
-
+    def reportControlLine(self):
+        return self.control_slope, self.control_intercept, self.control_r_value, self.control_p_value, self.control_std_err

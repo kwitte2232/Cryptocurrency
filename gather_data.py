@@ -37,10 +37,11 @@ class GatherData():
 
         self.scheduler.run()
 
-    def fetch_and_presists_exchange_rate(self):
-        timestamp = self.round_time(int(time.time()))
+    def fetch_and_presists_exchange_rate(self, timestamp=None):
+        if timestamp == None:
+            timestamp = self.round_time(int(time.time()))
         rate = self.fetch_exchange_rate()
-        if rate != False:
+        if rate != False and rate != None:
             self.persists_exchange_rate(timestamp, rate)
             print rate
 
@@ -58,5 +59,8 @@ class GatherData():
         self.exchange_rate.rate = rate
         self.exchange_rate.create()
 
-    def retrieve_exchange_rates(self):
-        return self.exchange_rate.fetchAll()
+    def retrieve_exchange_rates(self, count=0):
+        return self.exchange_rate.fetchAll(self.currency_from, self.currency_to)
+
+    def retrieveExchangeRatesSince(self, timestamp):
+        return self.exchange_rate.fetchAllSince(self.currency_from, self.currency_to, timestamp)

@@ -9,22 +9,26 @@ import strategies.spike as spike
 import strategy_test
 
 import matplotlib.pyplot as plt
+import numpy
 
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
-# DATA_RESOLUTION = os.environ.get('DATA_RESOLUTION')
+# PULL_RESOLUTION = os.environ.get('PULL_RESOLUTION')
 
-# btceth.schedule_rate_pulls(interval=DATA_RESOLUTION)
+# btceth.schedule_rate_pulls(interval=PULL_RESOLUTION)
 # time.sleep(1)
 
 btceth = gather_data.GatherData('BTC', 'ETH')
 
 data = btceth.retrieve_exchange_rates();
 
-spike = spike.Spike(data)
-momentum = momentum.Momentum(data)
-spike.setExchangeFee(.11)
-momentum.setExchangeFee(.11)
+data1 = data[0:5350]
+data2 = data[5351:len(data)]
+
+spike = spike.Spike(data2)
+momentum = momentum.Momentum(data2)
+# spike.setExchangeFee(.11)
+# momentum.setExchangeFee(.11)
 
 # # Strategies
 
@@ -52,7 +56,7 @@ results = []
 
 # spike_test = strategy_test.StrategyTest(spike)
 # spike_test.setRange(3000, 4000)
-# spike_test.setInterval(20)
+# spike_test.setInterval(200)
 # spike_test.testThreshold(resolution = 50)
 # spike_test.report()
 

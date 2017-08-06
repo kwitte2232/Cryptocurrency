@@ -5,20 +5,28 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats
+import time
+
 import exchange_rate
+import trade
 
-dotenv.load_dotenv(join(dirname(__file__), '.env'))
+trade = trade.Trade()
+trade.run()
 
-DATA_RESOLUTION = os.environ.get('DATA_RESOLUTION')
+time.sleep(1)
 
-rates = exchange_rate.ExchangeRate().fetchAll()
+# dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
-price_data = []
+# DATA_RESOLUTION = os.environ.get('DATA_RESOLUTION')
 
-for rate in rates:
-    price_data.append([int(rate[1]), float(rate[4])])
+# rates = exchange_rate.ExchangeRate().fetchAll()
 
-plt.plot(price_data)
+# price_data = []
+
+# for rate in rates:
+#     price_data.append([int(rate[1]), float(rate[4])])
+
+# plt.plot(price_data)
 
 # 0.0817
 # 0.08067064
