@@ -37,7 +37,7 @@ data = btceth.retrieveExchangeRates();
 data1 = data[:5350]
 data2 = data[5351:]
 
-spike = spike.Spike(data2)
+spike = spike.Spike(data1)
 momentum = momentum.Momentum(data2)
 spike.setExchangeFee(.11)
 momentum.setExchangeFee(.11)
@@ -71,8 +71,8 @@ def runMomentum(momemntum):
 def test_spike(spike):
 
     spike_test = strategy_test.StrategyTest(spike)
-    spike_test.setRange(3000, 4000)
-    spike_test.setInterval(500)
+    spike_test.setRange(1000, 6000)
+    spike_test.setInterval(100)
     spike_test.testThreshold(resolution = 50)
     spike_test.report()
 

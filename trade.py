@@ -32,7 +32,7 @@ class Trade():
 
         timestamp = self.roundTime(int(time.time()))
 
-        self.btceth.fetch_and_presists_exchange_rate(timestamp=timestamp)
+        self.btceth.fetchAndPresistExchangeRate(timestamp=timestamp)
         self.tradeCheck(timestamp=timestamp)
 
         threading.Timer(self.PULL_RESOLUTION, self.run).start()
@@ -57,7 +57,7 @@ class Trade():
         if len(data) < self.TEST_RESOLUTION / self.PULL_RESOLUTION * .75:
             print "Insufficient data:", str(len(data)) + "/" + str(self.TEST_RESOLUTION / self.PULL_RESOLUTION), "since", str(timestamp)
             if self.bought:
-                value = float(list(data).pop()[4])
+                value = data.tail(1)['rate']
                 self.bought = False
                 self.sell(spike, value)
                 spike.report()
@@ -66,13 +66,13 @@ class Trade():
         buy = spike.test()
 
         if buy and self.bought == False:
-            value = float(list(data).pop()[4])
+            value = data.tail(1)['rate']
             self.buy(spike, value)
-            print "Bought at", value, "for", self.invested_value
+            print "Bought at", self.invested_value
         elif buy == False and self.bought:
-            value = float(list(data).pop()[4])
+            value = data.tail(1)['rate']
             self.sell(spike, value)
-            print "Sold at", value, "for", self.invested_value
+            print "Sold for", self.invested_value
 
     def buy(self, spike, value):
         spike.invested_value = self.invested_value

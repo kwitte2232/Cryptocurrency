@@ -15,10 +15,10 @@ class ExchangeRate(model.Model):
 
     def fetchAllBetween(self, currency_from='BTC', currency_to='ETH', start=0, end=None):
         query = self.getSelect() + self.getWhereCurrency(currency_from, currency_to)
-        query += " AND `timestamp` > " + str(start) + " "
+        query += " AND `timestamp` >= " + str(start) + " "
 
         if end != None:
-            query += " AND `timestamp` < " + str(end) + " "
+            query += " AND `timestamp` <= " + str(end) + " "
 
         return self.makeQuery(query)
 
