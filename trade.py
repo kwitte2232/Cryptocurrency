@@ -25,12 +25,12 @@ class Trade():
         self.invested_value = 1000
         self.traded_value = 0
 
-    def round_time(self, timestamp):
+    def roundTime(self, timestamp):
         return int(math.floor(timestamp / self.PULL_RESOLUTION) * self.PULL_RESOLUTION)
 
     def run(self):
 
-        timestamp = self.round_time(int(time.time()))
+        timestamp = self.roundTime(int(time.time()))
 
         self.btceth.fetch_and_presists_exchange_rate(timestamp=timestamp)
         self.tradeCheck(timestamp=timestamp)
@@ -41,7 +41,7 @@ class Trade():
 
     def tradeCheck(self, timestamp = None):
         if timestamp == None:
-            timestamp = self.round_time(int(time.time()))
+            timestamp = self.roundTime(int(time.time()))
 
         timestamp -= self.TEST_RESOLUTION
 
