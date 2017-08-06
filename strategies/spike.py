@@ -5,7 +5,7 @@ import strategy
 class Spike(strategy.Strategy):
 
     def __init__(self, data):
-        self.data = list(map(self.extractTimeAndRate, data))
+        self.data = data
         self.setExchangeFee(0)
         self.reset()
 

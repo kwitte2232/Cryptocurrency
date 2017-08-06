@@ -37,10 +37,7 @@ class Strategy():
         return self.invested_value
 
     def getLine(self, test_data):
-        test_vals = list(map(self.extractRate, test_data))
-        test_times = list(map(self.extractTime, test_data))
-
-        self.slope, self.intercept, self.r_value, self.p_value, self.std_err = stats.linregress(test_vals, test_times)
+        self.slope, self.intercept, self.r_value, self.p_value, self.std_err = stats.linregress(test_data['rate'], test_data['timestamp'])
 
         return self.slope, self.intercept, self.r_value, self.p_value, self.std_err
 
@@ -49,9 +46,9 @@ class Strategy():
             buy = self.testPoint(self.pointer)
 
             if buy and self.bought == False:
-                self.buy(self.data[self.pointer][1])
+                self.buy(self.data.iloc[self.pointer]['rate'])
             elif buy == False and self.bought:
-                self.sell(self.data[self.pointer][1])
+                self.sell(self.data.iloc[self.pointer]['rate'])
 
             self.pointer += 1
 

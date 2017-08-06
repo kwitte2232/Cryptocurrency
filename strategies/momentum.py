@@ -5,7 +5,7 @@ import strategy
 class Momentum(strategy.Strategy):
 
     def __init__(self, data):
-        self.data = list(map(self.extractTimeAndRate, data))
+        self.data = data
         self.setExchangeFee(0)
         self.reset()
 
@@ -26,7 +26,7 @@ class Momentum(strategy.Strategy):
         control_slope = self.getControlLine(test_data)
 
         test_point = int(round(len(test_data) - self.resolution * 3 / 4))
-        test_interval = test_data[test_point:len(test_data)]
+        test_interval = test_data[test_point:]
 
         test_slope = self.getLine(test_interval)
 

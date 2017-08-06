@@ -1,8 +1,10 @@
 import model
+import pandas as pd
 
 class ExchangeRate(model.Model):
 
     table = 'exchange_rates'
+    columns = [ 'id', 'timestamp', 'currency_from', 'currency_to', 'rate' ]
     fillable = [ 'timestamp', 'currency_from', 'currency_to', 'rate' ]
 
     def initialize(self):
@@ -20,12 +22,9 @@ class ExchangeRate(model.Model):
 
         return self.makeQuery(query)
 
-    def makeQuery(self, query):
-        self.db.cursor.execute(query)
-        return self.db.cursor.fetchall()
-
-    def getSelect(self):
-        return "SELECT * FROM " + self.table + " "
-
     def getWhereCurrency(self, currency_from='BTC', currency_to='ETH'):
         return " WHERE `currency_from` LIKE '"+currency_from+"' AND `currency_to` LIKE '"+currency_to+"' "
+
+    def transformModel(self, dataframe):
+        dataframe[['id','timestamp','rate']] = dataframe[['id','timestamp','rate']].apply(pd.to_numeric)
+        return dataframe
