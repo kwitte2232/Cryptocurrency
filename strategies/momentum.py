@@ -9,19 +9,7 @@ class Momentum(strategy.Strategy):
         self.setExchangeFee(0)
         self.reset()
 
-    def testPoint(self, point):
-        if point < self.resolution:
-            return False
-
-        control_point = point - self.resolution
-        control_interval = self.data[control_point:point]
-
-        return self.testData(control_interval)
-
-    def test(self):
-        return self.testData(self.data)
-
-    def testData(self, test_data):
+    def executeStrategy(self, test_data):
 
         control_slope = self.getControlLine(test_data)
 
