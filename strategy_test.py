@@ -19,41 +19,49 @@ class StrategyTest():
 
     def setPoint(self, point):
         return int(round(point / self.interval))
+
     def testResolution(self, threshold = 2000, investment = 1000):
+        # Set our start and end points in the data
         start = self.setPoint(self.start)
         end = self.setPoint(self.end)
+
+        if start > end:
+            # That doesn't work!
+            return false
+
         if start < 1:
             start = 1
         if end < 1:
             end = 1
-        if start > end:
-            return false
+
         for point in range(start, end):
             resolution = point * self.interval
-            self.strategy.reset()
-            self.strategy.setTradeThreshold(threshold)
-            self.strategy.setInitialInvestment(investment)
-            self.strategy.setResolution(resolution)
             print "Resolution: " + str(resolution)
-            self.strategy.run()
-            self.strategy.report()
-            self.results.append(self.strategy.getNet())
+            self.runTest(resolution, threshold, investment)
 
     def testThreshold(self, resolution = 100, investment = 1000):
+        # Set our start and end points in the data
         start = self.setPoint(self.start)
         end = self.setPoint(self.end)
+
         if start > end:
+            # That doesn't work!
             return false
+
         for point in range(start, end):
             threshold = point * self.interval
-            self.strategy.reset()
-            self.strategy.setTradeThreshold(threshold)
-            self.strategy.setInitialInvestment(investment)
-            self.strategy.setResolution(resolution)
             print "Threshold: " + str(threshold)
-            self.strategy.run()
-            self.strategy.report()
-            self.results.append(self.strategy.getNet())
+            self.runTest(resolution, threshold, investment)
+
+    def runTest(resolution, threshold, investment):
+        self.strategy.reset()
+        self.strategy.setTradeThreshold(threshold)
+        self.strategy.setInitialInvestment(investment)
+        self.strategy.setResolution(resolution)
+        self.strategy.run()
+        self.strategy.report()
+        self.results.append(self.strategy.getNet())
+
 
     def report(self):
         plt.plot(self.results)
