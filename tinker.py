@@ -37,6 +37,8 @@ data = btceth.retrieveExchangeRates();
 data1 = data[:5350]
 data2 = data[5351:]
 
+print data2.head()
+
 spike = spike.Spike(data2)
 momentum = momentum.Momentum(data2)
 spike.setExchangeFee(.11)
@@ -44,17 +46,17 @@ momentum.setExchangeFee(.11)
 
 # # # Strategies
 
-spike.setTradeThreshold(2200)
-spike.setInitialInvestment(1000)
-spike.setResolution(50)
-spike.run()
-spike.report()
+# spike.setTradeThreshold(2200)
+# spike.setInitialInvestment(1000)
+# spike.setResolution(50)
+# spike.run()
+# spike.report()
 
-momentum.setTradeThreshold(3250)
-momentum.setInitialInvestment(1000)
-momentum.setResolution(225)
-momentum.run()
-momentum.report()
+# momentum.setTradeThreshold(3250)
+# momentum.setInitialInvestment(1000)
+# momentum.setResolution(225)
+# momentum.run()
+# momentum.report()
 
 # # Run tests
 

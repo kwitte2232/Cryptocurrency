@@ -26,5 +26,8 @@ class ExchangeRate(model.Model):
         return " WHERE `currency_from` LIKE '"+currency_from+"' AND `currency_to` LIKE '"+currency_to+"' "
 
     def transformModel(self, dataframe):
-        dataframe[['id','timestamp','rate']] = dataframe[['id','timestamp','rate']].apply(pd.to_numeric)
+        dataframe[['id', 'rate']] = dataframe[['id', 'rate']].apply(pd.to_numeric)
+        dataframe.index = pd.to_datetime(dataframe['timestamp'], unit='s')
+        del dataframe['timestamp']
+        del dataframe.index.name
         return dataframe
