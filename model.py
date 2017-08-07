@@ -1,4 +1,5 @@
 import database
+import pandas as pd
 
 class Model():
 
@@ -26,3 +27,11 @@ class Model():
         attributes = self.get_fillable_attributes()
         columns = self.get_fillable_columns()
         self.db.query("INSERT INTO "+self.table+" ("+columns+") VALUES (%s, %s, %s, %s)", attributes)
+
+    def makeQuery(self, query):
+        self.db.cursor.execute(query)
+        data = self.db.cursor.fetchall()
+        return self.transformModel(pd.DataFrame(list(data), columns=self.columns))
+
+    def getSelect(self):
+        return "SELECT * FROM " + self.table + " "
