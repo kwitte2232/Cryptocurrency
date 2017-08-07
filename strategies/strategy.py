@@ -14,15 +14,6 @@ class Strategy():
     def setExchangeFee(self, fee):
         self.exchange_fee = fee
 
-    def extractTimeAndRate(self, x):
-        return [x[1], x[4]]
-
-    def extractRate(self, x):
-        return float(x[1])
-
-    def extractTime(self, x):
-        return float(x[0])
-
     def setResolution(self, resolution):
         self.resolution = resolution
 
@@ -51,6 +42,18 @@ class Strategy():
                 self.sell(self.data.iloc[self.pointer]['rate'])
 
             self.pointer += 1
+
+    def test(self):
+        return self.executeStrategy(self.data)
+
+    def testPoint(self, point):
+        if point < self.resolution:
+            return False
+
+        test_point = point - self.resolution
+        test_interval = self.data[test_point:point]
+
+        return self.executeStrategy(test_interval)
 
     def report(self):
         print self.original_value, self.invested_value

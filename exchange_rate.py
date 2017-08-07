@@ -15,10 +15,10 @@ class ExchangeRate(model.Model):
 
     def fetchAllBetween(self, currency_from='BTC', currency_to='ETH', start=0, end=None):
         query = self.getSelect() + self.getWhereCurrency(currency_from, currency_to)
-        query += " AND `timestamp` > " + str(start) + " "
+        query += " AND `timestamp` >= " + str(start) + " "
 
         if end != None:
-            query += " AND `timestamp` < " + str(end) + " "
+            query += " AND `timestamp` <= " + str(end) + " "
 
         return self.makeQuery(query)
 
@@ -26,8 +26,7 @@ class ExchangeRate(model.Model):
         return " WHERE `currency_from` LIKE '"+currency_from+"' AND `currency_to` LIKE '"+currency_to+"' "
 
     def transformModel(self, dataframe):
-        dataframe[['id', 'rate']] = dataframe[['id', 'rate']].apply(pd.to_numeric)
+        dataframe[['id', 'timestamp', 'rate']] = dataframe[['id', 'timestamp', 'rate']].apply(pd.to_numeric)
         dataframe.index = pd.to_datetime(dataframe['timestamp'], unit='s')
-        del dataframe['timestamp']
         del dataframe.index.name
         return dataframe
