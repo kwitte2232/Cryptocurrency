@@ -9,7 +9,7 @@ class Model():
     def __init__(self):
         self.db = database.Database()
 
-    def get_fillable_attributes(self):
+    def getFillableAttributes(self):
         attributes = []
         for i in range(len(self.fillable)):
             if hasattr(self, self.fillable[i]):
@@ -18,15 +18,23 @@ class Model():
                 attributes.append(None)
         return attributes
 
-    def get_fillable_columns(self):
+    def getFillableColumns(self):
         columns = '`, `'.join(self.fillable)
         columns = '`'+columns+'`'
         return columns
 
     def create(self):
-        attributes = self.get_fillable_attributes()
-        columns = self.get_fillable_columns()
-        self.db.query("INSERT INTO "+self.table+" ("+columns+") VALUES (%s, %s, %s, %s)", attributes)
+        attributes = self.getFillableAttributes()
+        columns = self.getFillableColumns()
+        values = ''
+        for column in self.fillable:
+            if values == '':
+                values += '%s'
+            else: 
+                values += ', %s'
+
+        print "INSERT INTO "+self.table+" ("+columns+") VALUES ("+values+")", attributes
+        self.db.query("INSERT INTO "+self.table+" ("+columns+") VALUES ("+values+")", attributes)        
 
     def makeQuery(self, query):
         self.db.cursor.execute(query)

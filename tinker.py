@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats
 import time
+import requests
 
 
 import gather_data
@@ -14,6 +15,7 @@ import strategies.momentum as momentum
 import strategies.spike as spike
 import strategy_test
 import trade
+import candlestick
 
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
@@ -34,8 +36,29 @@ data = btceth.retrieveExchangeRates();
 # plt.plot(results)
 # plt.show()
 
-data1 = data[:5350]
-data2 = data[5351:]
+# https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1501987800&end=1502107800&period=300
+
+url = 'https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1501987800&end=1502107800&period=300'
+response = requests.get(url)
+
+plx_btceth = candlestick.Candlestick()
+
+for candle in response.json():
+    plx_btceth.timestamp = candle['date']
+    plx_btceth.currency_from = 'ETH'
+    plx_btceth.currency_to = 'BTC'
+    plx_btceth.high = candle['high']
+    plx_btceth.low = candle['low']
+    plx_btceth.open = candle['open']
+    plx_btceth.close = candle['close']
+    plx_btceth.volume = candle['volume']
+    plx_btceth.quote_volume = candle['quoteVolume']
+    plx_btceth.weighted_average = candle['weightedAverage']
+    plx_btceth.create()
+
+
+data1 = data[:875]
+data2 = data[876:]
 
 spike = spike.Spike(data1)
 momentum = momentum.Momentum(data2)
