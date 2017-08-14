@@ -123,6 +123,14 @@ class Ichimoku(strategy.Strategy):
 
         return ichimoku
 
+    def reportBuy(self):
+        self.bought_value = self.invested_value
+        self.bought_rate = self.data.iloc[self.pointer]['rate']
+
+    def reportSell(self):
+        print self.bought_value <= self.invested_value, self.bought_value, self.invested_value
+
+
 
 
 
