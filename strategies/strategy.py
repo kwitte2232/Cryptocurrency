@@ -65,15 +65,22 @@ class Strategy():
         self.traded_value = float(self.invested_value - self.exchange_fee) / float(value)
         self.bought = True
         self.trades += 1
-        # print str(value) + " bought."
+        self.reportBuy()
         return self.traded_value
 
     def sell(self, value):
         self.invested_value = float(self.traded_value) * float(value) - self.exchange_fee
         self.bought = False
         self.trades += 1
-        # print str(value) + " sold. new invested value: " + str(self.invested_value))
+        self.reportSell()
         return self.invested_value
+
+    def reportBuy(self):
+        return None
+
+    def reportSell(self):
+        return None
+
 
 
 
