@@ -40,7 +40,8 @@ dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
 candle = candlestick.Candlestick()
 # data = candle.fetchAllBetween('ETH', 'BTC', 1498000000)
-data = candle.fetchAllBetween('ETH', 'BTC', 1500000000)
+# data = candle.fetchAllBetween('ETH', 'BTC', 1487116800)
+data = candle.fetchAllBetween('ETH', 'BTC', 1501116800)
 data['rate'] = data['high'] + data['low'] / 2
 
 # print data.describe()
@@ -59,18 +60,18 @@ cloud.setExchangeFee(.11)
 
 def runCloud(cloud):
 
-    cloud.setTradeThreshold(10020)
+    cloud.setTradeThreshold(10025)
     cloud.setInitialInvestment(1000)
     cloud.setResolution(52)
     cloud.run()
     cloud.report()
 
-# runCloud(cloud)
+runCloud(cloud)
 
-# print 'Elapsed:', time.time() - start
+print 'Elapsed:', time.time() - start
 
-# print data.head(1).index[0]
-# print data.tail(1).index[0]
+print data.head(1).index[0]
+print data.tail(1).index[0]
 
 # # Run tests
 
@@ -82,4 +83,4 @@ def test_cloud(cloud):
     cloud_test.testThreshold(resolution = 52)
     cloud_test.report()
 
-test_cloud(cloud)
+# test_cloud(cloud)
