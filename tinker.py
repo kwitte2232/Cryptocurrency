@@ -37,11 +37,17 @@ dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
 
 
-
 candle = candlestick.Candlestick()
 # data = candle.fetchAllBetween('ETH', 'BTC', 1498000000)
+# Rate window
+data = candle.fetchAllBetween('ETH', 'BTC', 1501987800, 1502107800)
+# One month
+# data = candle.fetchAllBetween('ETH', 'BTC', 1501116800)
+# Six months
 # data = candle.fetchAllBetween('ETH', 'BTC', 1487116800)
-data = candle.fetchAllBetween('ETH', 'BTC', 1501116800)
+# All
+# data = candle.fetchAll('ETH', 'BTC')
+
 data['rate'] = data['high'] + data['low'] / 2
 
 # print data.describe()
@@ -72,6 +78,9 @@ print 'Elapsed:', time.time() - start
 
 print data.head(1).index[0]
 print data.tail(1).index[0]
+
+# plt.plot(cloud.getSellValues())
+# plt.show()
 
 # # Run tests
 

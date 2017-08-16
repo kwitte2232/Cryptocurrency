@@ -11,6 +11,7 @@ class Ichimoku(strategy.Strategy):
         self.data = data
         self.setExchangeFee(0)
         self.reset()
+        self.sell_values = []
 
     def executeStrategy(self, test_data):
         self.last_index = test_data.iloc[-1].name
@@ -130,13 +131,18 @@ class Ichimoku(strategy.Strategy):
 
         return ichimoku
 
+    def getSellValues(self):
+        return self.sell_values
+
     # def reportBuy(self):
     #     print self.last_index, self.span_a / self.span_b
     #     self.bought_value = self.invested_value
     #     self.bought_rate = self.data.iloc[self.pointer]['rate']
 
-    # def reportSell(self):
-    #     print self.last_index, self.bought_value <= self.invested_value, self.bought_value, self.invested_value, self.invested_value - self.bought_value
+    def reportSell(self):
+        self.sell_values.append(self.invested_value)
+        # print self.last_index
+        # print self.last_index, self.bought_value <= self.invested_value, self.invested_value / self.bought_value * 100 - 100
 
 
 
