@@ -1,5 +1,6 @@
 from scipy import stats
 
+
 class Strategy():
 
     def reset(self):

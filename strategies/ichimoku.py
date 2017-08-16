@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy
 from scipy import stats
 import strategy
@@ -12,32 +13,34 @@ class Ichimoku(strategy.Strategy):
         self.reset()
 
     def executeStrategy(self, test_data):
-        last_index = test_data.iloc[-1].name
+        self.last_index = test_data.iloc[-1].name
         # print last_index
 
         params = [9, 26, 52, 22]   # [convert_window, base_window, span_B_window, lagging_shift]
         ichimoku = self.findIchimoku(test_data, *params)
         # self.plot(ichimoku, test_data)
 
-        test_frame = ichimoku.loc[last_index]
+        test_frame = ichimoku.loc[self.last_index]
 
-        conversion = test_frame['conversion']
-        base = test_frame['base']
-        span_a = test_frame['span_a']
-        span_b = test_frame['span_b']
+        self.conversion = test_frame['conversion']
+        self.base = test_frame['base']
+        self.span_a = test_frame['span_a']
+        self.span_b = test_frame['span_b']
 
         # True = green cloud, False = red cloud
-        cloud_trend = span_a > span_b
+        cloud_trend = self.span_a > self.span_b
+        # The cloud is big
+        cloud_threshold = self.span_a / self.span_b > self.trade_threshold / 10000
         # Tenkan is above the Kijun
-        line_trend = conversion > base
+        line_trend = self.conversion > self.base
         # Tenkan is above the cloud
-        line_cloud_trend = conversion > span_a and conversion > span_b
+        line_cloud_trend = self.conversion > self.span_a and self.conversion > self.span_b
 
         # Either Tenkan is above the Kijun with a green cloud, or the cloud is red but we've already bought
-        buy = (line_trend and cloud_trend and line_cloud_trend) or (line_trend and line_cloud_trend and self.bought)
+        buy = (line_trend and cloud_trend and line_cloud_trend and cloud_threshold) or (line_trend and line_cloud_trend and self.bought)
 
         # print buy
-        if buy: print last_index
+        # if buy: print self.last_index
 
         return buy
 
@@ -123,12 +126,13 @@ class Ichimoku(strategy.Strategy):
 
         return ichimoku
 
-    def reportBuy(self):
-        self.bought_value = self.invested_value
-        self.bought_rate = self.data.iloc[self.pointer]['rate']
+    # def reportBuy(self):
+    #     print self.last_index, self.span_a / self.span_b
+    #     self.bought_value = self.invested_value
+    #     self.bought_rate = self.data.iloc[self.pointer]['rate']
 
-    def reportSell(self):
-        print self.bought_value <= self.invested_value, self.bought_value, self.invested_value
+    # def reportSell(self):
+    #     print self.last_index, self.bought_value <= self.invested_value, self.bought_value, self.invested_value, self.invested_value - self.bought_value
 
 
 

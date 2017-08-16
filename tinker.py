@@ -30,13 +30,22 @@ dotenv.load_dotenv(join(dirname(__file__), '.env'))
 # plt.plot(results)
 # plt.show()
 
+# Overlap data
 # https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1501987800&end=1502107800&period=300
+# All data
+# url = 'https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1438992000&end=9999999999&period=300'
+
+
+
 
 candle = candlestick.Candlestick()
-data = candle.fetchAll('ETH', 'BTC')
+# data = candle.fetchAllBetween('ETH', 'BTC', 1498000000)
+data = candle.fetchAllBetween('ETH', 'BTC', 1500000000)
 data['rate'] = data['high'] + data['low'] / 2
 
-print data.describe()
+# print data.describe()
+
+start = time.time()
 
 # data1 = data[:875]
 # data2 = data[876:]
@@ -50,21 +59,27 @@ cloud.setExchangeFee(.11)
 
 def runCloud(cloud):
 
-    # cloud.setTradeThreshold(2200)
+    cloud.setTradeThreshold(10020)
     cloud.setInitialInvestment(1000)
     cloud.setResolution(52)
     cloud.run()
     cloud.report()
 
-runCloud(cloud)
+# runCloud(cloud)
+
+# print 'Elapsed:', time.time() - start
+
+# print data.head(1).index[0]
+# print data.tail(1).index[0]
 
 # # Run tests
 
 def test_cloud(cloud):
 
     cloud_test = strategy_test.StrategyTest(cloud)
-    cloud_test.setRange(1000, 6000)
-    cloud_test.setInterval(100)
-    cloud_test.testThreshold(resolution = 50)
+    cloud_test.setRange(10000, 10030)
+    cloud_test.setInterval(5)
+    cloud_test.testThreshold(resolution = 52)
     cloud_test.report()
 
+test_cloud(cloud)
