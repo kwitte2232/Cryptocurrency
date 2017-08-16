@@ -92,8 +92,12 @@ class Ichimoku(strategy.Strategy):
 
         return line.to_frame()
 
+    def findSpanB(self, high_data, low_data, window):
+        span_B = findRollingHighsAndLowsLine(high_data, low_data, window).shift(25, freq='min')
+        return span_B
+
     def findSpanA(self, conversion, base):
-        span_a = (conversion['conversion'] + base['base'])/2
+        span_a = ((conversion['conversion'] + base['base'])/2).shift(25, freq='min')
 
         return span_a.to_frame()
 
@@ -108,7 +112,7 @@ class Ichimoku(strategy.Strategy):
         base = self.findRollingHighsAndLowsLine(high_data, low_data, base_window)
         base = base.rename(columns={0:'base'})
 
-        span_b = self.findRollingHighsAndLowsLine(high_data, low_data, span_b_window)
+        span_b = self.findSpanB(high_data, low_data, span_b_window)
         span_b = span_b.rename(columns={0:'span_b'})
 
         span_a = self.findSpanA(conversion, base)
