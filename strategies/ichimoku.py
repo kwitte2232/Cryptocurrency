@@ -113,7 +113,7 @@ class Ichimoku(strategy.Strategy):
         base = self.findRollingHighsAndLowsLine(high_data, low_data, base_window)
         base = base.rename(columns={0:'base'})
 
-        span_b = self.findRollingHighsAndLowsLine(high_data, low_data, span_b_window)
+        span_b = self.findSpanB(high_data, low_data, span_b_window)
         span_b = span_b.rename(columns={0:'span_b'})
 
         span_a = self.findSpanA(conversion, base)
@@ -134,15 +134,15 @@ class Ichimoku(strategy.Strategy):
     def getSellValues(self):
         return self.sell_values
 
-    # def reportBuy(self):
-    #     print self.last_index, self.span_a / self.span_b
-    #     self.bought_value = self.invested_value
-    #     self.bought_rate = self.data.iloc[self.pointer]['rate']
+    def reportBuy(self):
+        print self.last_index, self.span_a / self.span_b
+        self.bought_value = self.invested_value
+        self.bought_rate = self.data.iloc[self.pointer]['rate']
 
     def reportSell(self):
         self.sell_values.append(self.invested_value)
         # print self.last_index
-        # print self.last_index, self.bought_value <= self.invested_value, self.invested_value / self.bought_value * 100 - 100
+        print self.last_index, self.bought_value <= self.invested_value, self.invested_value / self.bought_value * 100 - 100
 
 
 

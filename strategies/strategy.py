@@ -1,4 +1,6 @@
 from scipy import stats
+import models.test_run as test_run
+import json
 
 
 class Strategy():
@@ -34,6 +36,18 @@ class Strategy():
         return self.slope, self.intercept, self.r_value, self.p_value, self.std_err
 
     def run(self):
+        self.run = test_run.TestRun()
+        self.run.strategy = self.__class__.__name__
+        self.run.investment = self.original_value
+        self.run.from_time = self.data.head(1).index[0].value // 10 ** 9
+        self.run.to_time = self.data.tail(1).index[0].value // 10 ** 9
+        self.run.parameters = json.dumps({
+            'resolution': self.resolution,
+            'fee': self.exchange_fee,
+            'threshold': self.trade_threshold
+            })
+        self.run.create()
+
         while self.pointer < self.set_length:
             buy = self.testPoint(self.pointer)
 
@@ -43,6 +57,9 @@ class Strategy():
                 self.sell(self.data.iloc[self.pointer]['rate'])
 
             self.pointer += 1
+
+        self.run.roi = self.invested_value
+        self.run.update()
 
     def test(self):
         return self.executeStrategy(self.data)

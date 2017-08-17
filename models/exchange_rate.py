@@ -8,7 +8,7 @@ class ExchangeRate(model.Model):
     fillable = [ 'timestamp', 'currency_from', 'currency_to', 'rate' ]
 
     def initialize(self):
-        self.db.query(self.getSelectQuery() + "(id INT AUTO_INCREMENT KEY, timestamp TEXT, currency_from TEXT, currency_to TEXT, rate TEXT)")
+        self.db.query("CREATE TABLE IF NOT EXISTS " + self.table + " (id INT AUTO_INCREMENT KEY, timestamp TEXT, currency_from TEXT, currency_to TEXT, rate TEXT)")
 
     def fetchAll(self, currency_from='BTC', currency_to='ETH'):
         return self.makeQuery(self.getSelect() + self.getWhereCurrency(currency_from, currency_to))

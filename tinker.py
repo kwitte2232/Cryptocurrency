@@ -7,14 +7,16 @@ import matplotlib.pyplot as plt
 import scipy.stats
 import time
 import requests
+import json
 
 
 import gather_data
-import exchange_rate
+import models.test_run as test_run
+import models.exchange_rate as exchange_rate
+import models.candlestick as candlestick
 import strategies.ichimoku as ichimoku
 import strategy_test
 import trade
-import candlestick
 
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
 
@@ -36,23 +38,38 @@ dotenv.load_dotenv(join(dirname(__file__), '.env'))
 # url = 'https://poloniex.com/public?command=returnChartData&currencyPair=BTC_ETH&start=1438992000&end=9999999999&period=300'
 
 
+# run = test_run.TestRun()
+# run.initialize()
+
+# run.strategy = 'New Run'
+# run.from_time = 15
+# run.to_time = 34
+# run.investment = 1000
+# run.roi = 1000.0014
+# run.parameters = json.dumps(['test', 'one_two'])
+
+# new_run = run.create()
+
+# print new_run
 
 candle = candlestick.Candlestick()
-# data = candle.fetchAllBetween('ETH', 'BTC', 1498000000)
-# Rate window
-data = candle.fetchAllBetween('ETH', 'BTC', 1501987800, 1502107800)
-# One month
+# # data = candle.fetchAllBetween('ETH', 'BTC', 1498000000)
+# # Rate window
+# data = candle.fetchAllBetween('ETH', 'BTC', 1501987800, 1502107800)
+# # One month
 # data = candle.fetchAllBetween('ETH', 'BTC', 1501116800)
-# Six months
+# # Six months
 # data = candle.fetchAllBetween('ETH', 'BTC', 1487116800)
-# All
+# # All
 # data = candle.fetchAll('ETH', 'BTC')
 
-data['rate'] = data['high'] + data['low'] / 2
+# data = candle.fetchAllBetween('ETH', 'BTC', 1501987800, 1502012800)
+
+data['rate'] = data['close']
 
 # print data.describe()
 
-start = time.time()
+# start = time.time()
 
 # data1 = data[:875]
 # data2 = data[876:]
@@ -68,16 +85,17 @@ def runCloud(cloud):
 
     cloud.setTradeThreshold(10025)
     cloud.setInitialInvestment(1000)
-    cloud.setResolution(52)
+    cloud.setResolution(3)
     cloud.run()
     cloud.report()
 
+# print  data.tail(1).index[0].value // 10 ** 9
 runCloud(cloud)
 
-print 'Elapsed:', time.time() - start
+# print 'Elapsed:', time.time() - start
 
-print data.head(1).index[0]
-print data.tail(1).index[0]
+# print data.head(1).index[0]
+# print data.tail(1).index[0]
 
 # plt.plot(cloud.getSellValues())
 # plt.show()

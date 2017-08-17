@@ -8,7 +8,7 @@ class Candlestick(model.Model):
     fillable = [ 'timestamp', 'currency_from', 'currency_to', 'high', 'low', 'open', 'close', 'volume', 'quote_volume', 'weighted_average' ]
 
     def initialize(self):
-        self.db.query("CREATE TABLE IF NOT EXIST " + self.table + " (id INT AUTO_INCREMENT KEY, timestamp TEXT, currency_from TEXT, currency_to TEXT, high TEXT, low TEXT, open TEXT, close TEXT, volume TEXT, quote_volume TEXT, weighted_average TEXT)")
+        self.db.query("CREATE TABLE IF NOT EXISTS `" + self.table + "` (id INT AUTO_INCREMENT KEY, timestamp TEXT, currency_from TEXT, currency_to TEXT, high TEXT, low TEXT, open TEXT, close TEXT, volume TEXT, quote_volume TEXT, weighted_average TEXT)")
 
     def fetchAll(self, currency_from='BTC', currency_to='ETH'):
         return self.makeQuery(self.getSelect() + self.getWhereCurrency(currency_from, currency_to))
