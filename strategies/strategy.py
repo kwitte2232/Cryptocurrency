@@ -1,5 +1,6 @@
 from scipy import stats
 import models.test_run as test_run
+import models.trade as trade
 import json
 
 
@@ -83,6 +84,13 @@ class Strategy():
         self.traded_value = float(self.invested_value - self.exchange_fee) / float(value)
         self.bought = True
         self.trades += 1
+
+        self.trade = trade.Trade()
+        self.trade.test_run_id = self.run.id
+        self.trade.invested_value = self.invested_value
+        self.trade.buy_time = self.pointer
+        self.trade.create()
+
         self.reportBuy()
         return self.traded_value
 
@@ -90,6 +98,11 @@ class Strategy():
         self.invested_value = float(self.traded_value) * float(value) - self.exchange_fee
         self.bought = False
         self.trades += 1
+
+        self.trade.returned_value = self.invested_value
+        self.trade.sell_time = self.pointer
+        self.trade.update()
+
         self.reportSell()
         return self.invested_value
 

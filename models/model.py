@@ -33,9 +33,6 @@ class Model():
             else: 
                 values += ', %s'
 
-        print columns, values, attributes
-
-        # print "INSERT INTO "+self.table+" ("+columns+") VALUES ("+values+")", attributes
         self.db.query("INSERT INTO "+self.table+" ("+columns+") VALUES ("+values+")", attributes)
         self.id = self.db.cursor.lastrowid
         return self.makeQuery(self.getSelect() + " WHERE `id` LIKE '" + str(self.id) + "'")
@@ -46,11 +43,11 @@ class Model():
         values = ''
         for column in self.fillable:
             if values == '':
-                values += '%s'
+                values += '`' + column + "` = %s"
             else: 
-                values += ', %s'
+                values += ', `' + column + "` = %s"
 
-        return self.makeQuery("UPDATE "+self.table+" ("+columns+") VALUES ("+values+") WHERE `id` LIKE `"+self.id+"`", attributes)
+        return self.db.query("UPDATE "+self.table+" SET "+values+" WHERE `id` LIKE "+str(self.id), attributes)
 
     def makeQuery(self, query):
         self.db.cursor.execute(query)
