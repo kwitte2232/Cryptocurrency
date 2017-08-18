@@ -88,7 +88,7 @@ class Strategy():
         self.trade = trade.Trade()
         self.trade.test_run_id = self.run.id
         self.trade.invested_value = self.invested_value
-        self.trade.buy_time = self.pointer
+        self.trade.buy_time = self.data.iloc[self.pointer]['timestamp']
         self.trade.create()
 
         self.reportBuy()
@@ -100,7 +100,7 @@ class Strategy():
         self.trades += 1
 
         self.trade.returned_value = self.invested_value
-        self.trade.sell_time = self.pointer
+        self.trade.sell_time = self.data.iloc[self.pointer]['timestamp']
         self.trade.update()
 
         self.reportSell()
