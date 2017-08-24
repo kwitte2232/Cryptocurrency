@@ -3,7 +3,7 @@ import os
 from os.path import dirname, join
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.stats
 import time
 import requests
@@ -16,7 +16,11 @@ import strategy_test
 import trade
 import candlestick
 
+
+
 dotenv.load_dotenv(join(dirname(__file__), '.env'))
+
+print 'Success'
 
 # PULL_RESOLUTION = os.environ.get('PULL_RESOLUTION')
 
@@ -36,35 +40,38 @@ candle = candlestick.Candlestick()
 data = candle.fetchAll('ETH', 'BTC')
 data['rate'] = data['high'] + data['low'] / 2
 
-print data.describe()
+
+print 'Success'
+
+#print data.describe()
 
 # data1 = data[:875]
 # data2 = data[876:]
 
-cloud = ichimoku.Ichimoku(data)
-cloud.setExchangeFee(.11)
+#cloud = ichimoku.Ichimoku(data)
+#cloud.setExchangeFee(.11)
 
 # cloud.executeStrategy(data)
 
 # # Strategies
 
-def runCloud(cloud):
+#def runCloud(cloud):
 
     # cloud.setTradeThreshold(2200)
-    cloud.setInitialInvestment(1000)
-    cloud.setResolution(52)
-    cloud.run()
-    cloud.report()
+    #cloud.setInitialInvestment(1000)
+    #cloud.setResolution(52)
+    #cloud.run()
+    #cloud.report()
 
-runCloud(cloud)
+#runCloud(cloud)
 
 # # Run tests
 
-def test_cloud(cloud):
+#def test_cloud(cloud):
 
-    cloud_test = strategy_test.StrategyTest(cloud)
-    cloud_test.setRange(1000, 6000)
-    cloud_test.setInterval(100)
-    cloud_test.testThreshold(resolution = 50)
-    cloud_test.report()
+    #cloud_test = strategy_test.StrategyTest(cloud)
+    #cloud_test.setRange(1000, 6000)
+    #cloud_test.setInterval(100)
+    #cloud_test.testThreshold(resolution = 50)
+    #cloud_test.report()
 

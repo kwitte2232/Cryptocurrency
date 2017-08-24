@@ -1,7 +1,7 @@
 import numpy
 from scipy import stats
 import strategy
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import pandas as pd
 
 class Ichimoku(strategy.Strategy):
