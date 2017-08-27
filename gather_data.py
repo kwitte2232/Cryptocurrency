@@ -2,7 +2,7 @@ import time
 import sched
 import math
 import requests
-import exchange_rate
+import models.exchange_rate as exchange_rate
 import threading
 
 class GatherData():
